@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a1930;
+            color: #e6f1ff;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #64ffda;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        h1 {
+            color: #e6f1ff;
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #8892b0;
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        .filter-section {
+            margin-bottom: 50px;
+        }
+
+        .filter-title {
+            color: #e6f1ff;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 12px 25px;
+            background: transparent;
+            color: #64ffda;
+            border: 2px solid #64ffda;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            position: relative;
+            padding-left: 45px;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            border: 2px solid #64ffda;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn::after {
+            content: '✓';
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            color: #64ffda;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .filter-btn.active::before {
+            background: #64ffda;
+            border-color: #64ffda;
+        }
+
+        .filter-btn.active::after {
+            transform: translateY(-50%) scale(1);
+            color: #0a1930;
+        }
+
+        .filter-btn.active {
+            background: rgba(100, 255, 218, 0.1);
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 35px;
+            margin-top: 40px;
+        }
+
+        .project-card {
+            background: rgba(17, 34, 64, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(100, 255, 218, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #0a1930 0%, #112240 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(100, 255, 218, 0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .project-content {
+            padding: 28px;
+        }
+
+        .project-title {
+            font-size: 1.5em;
+            color: #e6f1ff;
+            margin-bottom: 15px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .project-description {
+            color: #8892b0;
+            line-height: 1.7;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            padding: 6px 14px;
+            background: rgba(100, 255, 218, 0.1);
+            color: #64ffda;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 500;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .filter-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-js"></canvas>
+    
+    <div class="container">
+        <a href="portfolio.html" class="back-link">← Back to Portfolio</a>
+        
+        <h1>My Projects</h1>
+        <p class="subtitle">Explore my recent work and personal projects showcasing my skills and creativity</p>
+
+        <div class="filter-section">
+            <div class="filter-title">Filter By:</div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="ml">Machine Learning</button>
+                <button class="filter-btn" data-filter="ai">AI/GenAI</button>
+                <button class="filter-btn" data-filter="data">Data Analysis</button>
+                <button class="filter-btn" data-filter="web">Web Development</button>
+            </div>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid"></div>
+    </div>
+
+    <script>
+        // Simple particle animation
+        const canvas = document.getElementById('particles-js');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 80;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(100, 255, 218, 0.3)';
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Draw lines between nearby particles
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(100, 255, 218, ${0.15 * (1 - distance / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Projects data
+        const projects = [
+            {
+                title: "SQL AI Agent",
+                description: "Transform natural language queries into SQL commands and execute them on a PostgreSQL database with this AI-powered agent, providing non-technical users with an intuitive web interface for seamless data interaction.",
+                tags: ["AI", "NLP", "PostgreSQL"],
+                category: "ai"
+            },
+            {
+                title: "Text Summarization Using Transformers",
+                description: "A GenAI-powered project that delivers concise summaries using both abstractive and extractive text summarization techniques with transformer models.",
+                tags: ["GenAI", "Transformers", "NLP"],
+                category: "ai"
+            },
+            {
+                title: "Hourly CO₂ Emission Prediction for Steel Production",
+                description: "Built a machine learning model to predict hourly CO₂ emissions in steel production using regression techniques. Deployed the model with Flask and Docker for real-time predictions.",
+                tags: ["Machine Learning", "Flask", "Docker"],
+                category: "ml"
+            },
+            {
+                title: "Credit Risk Prediction Using Ensemble Learning",
+                description: "Developed a credit risk prediction model using Random Forest and Logistic Regression to assess loan applicants' default risk and improve financial decision-making.",
+                tags: ["Ensemble Learning", "Random Forest", "Finance"],
+                category: "ml"
+            },
+            {
+                title: "Image Colorization using GANs",
+                description: "Transform grayscale images into realistic colorized versions using a Conditional GAN (Pix2Pix), leveraging deep learning for high-quality image generation.",
+                tags: ["GANs", "Deep Learning", "Computer Vision"],
+                category: "ai"
+            },
+            {
+                title: "Predicting Student Admission to University",
+                description: "Built a machine learning model to predict student admissions based on academic scores, and extracurriculars, aiding universities in data-driven selection processes.",
+                tags: ["Classification", "Education", "ML"],
+                category: "ml"
+            },
+            {
+                title: "Medical Insurance Cost Estimation",
+                description: "Developed a predictive model to estimate insurance costs based on customer demographics and health metrics, aiding in policy pricing and risk assessment.",
+                tags: ["Regression", "Healthcare", "ML"],
+                category: "ml"
+            },
+            {
+                title: "Customer Segmentation Analysis",
+                description: "Applied clustering techniques to segment customers based on purchasing behavior, enabling businesses to create targeted marketing campaigns.",
+                tags: ["Clustering", "K-Means", "Marketing"],
+                category: "ml"
+            },
+            {
+                title: "Bank Customer Churn Prediction",
+                description: "Identified key factors influencing customer churn using machine learning. Implemented predictive analytics to help banks retain high-value customers.",
+                tags: ["Classification", "Banking", "Analytics"],
+                category: "ml"
+            },
+            {
+                title: "International Student Demographics in US",
+                description: "Created an interactive Power BI dashboard to analyze international student demographics in the US. Visualized trends in student enrollment, country-wise distribution, and academic preferences.",
+                tags: ["Power BI", "Visualization", "Education"],
+                category: "data"
+            },
+            {
+                title: "Bike Store Analysis Power BI Project",
+                description: "Developed a Power BI dashboard to analyze bike store sales, customer demographics, and product demand. Provided insights on revenue trends, top-selling products, and customer behavior.",
+                tags: ["Power BI", "Sales Analytics", "Retail"],
+                category: "data"
+            },
+            {
+                title: "Pizza Sales Analysis using SQL",
+                description: "Analyzed pizza sales data using SQL to identify trends, optimize sales strategies, and improve revenue. Key insights included peak sales periods, top-selling pizzas, and customer preferences.",
+                tags: ["SQL", "Data Analysis", "Business Intelligence"],
+                category: "data"
+            }
+        ];
+
+        function renderProjects(filter = 'all') {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = '';
+
+            const filteredProjects = filter === 'all' 
+                ? projects 
+                : projects.filter(p => p.category === filter);
+
+            filteredProjects.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <div class="project-image"></div>
+                    <div class="project-content">
+                        <h3 class="project-title">${project.title}</h3>
+                        <p class="project-description">${project.description}</p>
+                        <div class="project-tags">
+                            ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderProjects(this.dataset.filter);
+            });
+        });
+
+        renderProjects();
+    </script>
+</body>
+</html>

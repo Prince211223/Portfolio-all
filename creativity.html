@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prince Yadav - Creative Works</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: #fff;
+            color: #333;
+        }
+
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            color: #333;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 217, 165, 0.2);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links li {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #00d9a5;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0;
+            background: linear-gradient(135deg, #00d9a5, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0;
+            color: #aaa;
+        }
+
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 40px 50px;
+            background: #f8f8f8;
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 217, 165, 0.1);
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            border: 2px solid #00d9a5;
+            background: transparent;
+            color: #00d9a5;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            opacity: 0;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: #00d9a5;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 217, 165, 0.4);
+        }
+
+        .gallery-section {
+            padding: 80px 50px;
+            min-height: 100vh;
+            background: #fff;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 60px;
+            opacity: 0;
+            background: linear-gradient(135deg, #00d9a5, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.9);
+            background: #f5f5f5;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 30px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #00d9a5;
+        }
+
+        .gallery-overlay p {
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        .gallery-tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 5px 12px;
+            background: rgba(0, 217, 165, 0.2);
+            border: 1px solid #00d9a5;
+            border-radius: 15px;
+            font-size: 11px;
+            color: #00d9a5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 1200px;
+            max-height: 90vh;
+            position: relative;
+            animation: modalZoom 0.3s;
+        }
+
+        @keyframes modalZoom {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #00d9a5;
+            color: #000;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .stats-section {
+            padding: 80px 50px;
+            background: #f8f8f8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            opacity: 0;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00d9a5;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+        }
+
+        footer {
+            background: #fff;
+            padding: 30px 50px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 217, 165, 0.2);
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .category-tabs {
+                flex-wrap: wrap;
+                top: 60px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">Prince Yadav</div>
+        <ul class="nav-links">
+            <li><a href="#design">Design</a></li>
+            <li><a href="#illustration">Illustration</a></li>
+            <li><a href="#branding">Branding</a></li>
+            <li><a href="#motion">Motion</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <h1>Projects & Works</h1>
+            <p>Exploring the intersection of design, art & innovation</p>
+        </div>
+    </section>
+
+    <div class="category-tabs">
+        <button class="tab-btn active" data-category="all">All Works</button>
+        <button class="tab-btn" data-category="design">UI/UX Design</button>
+        <button class="tab-btn" data-category="illustration">Illustration</button>
+        <button class="tab-btn" data-category="branding">Branding</button>
+        <button class="tab-btn" data-category="motion">Motion Graphics</button>
+    </div>
+
+    <section id="design" class="gallery-section">
+        <h2 class="section-title">Design Portfolio</h2>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Gallery items will be generated by JavaScript -->
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number" data-count="150">0</div>
+                <div class="stat-label">Projects Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="50">0</div>
+                <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="25">0</div>
+                <div class="stat-label">Awards Won</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="5">0</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <img src="scc.png" alt="Project">
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Prince Yadav. All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // Gallery Data
+        const galleryData = [
+            {
+                id: 1,
+                category: 'design',
+                title: 'E-Commerce Dashboard',
+                description: 'Modern admin dashboard with analytics',
+                tags: ['UI Design', 'Dashboard', 'Analytics'],
+                image: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800'
+            },
+            {
+                id: 2,
+                category: 'illustration',
+                title: 'Character Design',
+                description: 'Creative character illustration series',
+                tags: ['Illustration', 'Character', 'Digital Art'],
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800'
+            },
+            {
+                id: 3,
+                category: 'branding',
+                title: 'Brand Identity',
+                description: 'Complete brand identity for tech startup',
+                tags: ['Branding', 'Logo', 'Identity'],
+                image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800'
+            },
+            {
+                id: 4,
+                category: 'design',
+                title: 'Mobile Banking App',
+                description: 'Intuitive mobile banking experience',
+                tags: ['Mobile', 'UX', 'Finance'],
+                image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800'
+            },
+            {
+                id: 5,
+                category: 'motion',
+                title: 'Animated Logo',
+                description: 'Dynamic brand animation',
+                tags: ['Animation', 'Motion', 'Logo'],
+                image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800'
+            },
+            {
+                id: 6,
+                category: 'illustration',
+                title: 'Abstract Art',
+                description: 'Colorful abstract compositions',
+                tags: ['Abstract', 'Art', 'Digital'],
+                image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800'
+            },
+            {
+                id: 7,
+                category: 'design',
+                title: 'Landing Page',
+                description: 'High-converting product landing page',
+                tags: ['Web Design', 'Landing', 'Marketing'],
+                image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800'
+            },
+            {
+                id: 8,
+                category: 'branding',
+                title: 'Restaurant Branding',
+                description: 'Complete visual identity for restaurant',
+                tags: ['Branding', 'Food', 'Identity'],
+                image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800'
+            },
+            {
+                id: 9,
+                category: 'motion',
+                title: 'UI Interactions',
+                description: 'Smooth micro-interactions',
+                tags: ['Animation', 'UI', 'Interaction'],
+                image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800'
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        // Generate gallery items
+        function renderGallery(category = 'all') {
+            const grid = document.getElementById('galleryGrid');
+            const filtered = category === 'all' 
+                ? galleryData 
+                : galleryData.filter(item => item.category === category);
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="gallery-item" data-category="${item.category}" onclick="openModal('${item.image}')">
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="gallery-overlay">
+                        <h3>${item.title}</h3>
+                        <p>${item.description}</p>
+                        <div class="gallery-tags">
+                            ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Animate items
+            anime({
+                targets: '.gallery-item',
+                opacity: [0, 1],
+                scale: [0.9, 1],
+                delay: anime.stagger(100),
+                duration: 800,
+                easing: 'easeOutExpo'
+            });
+        }
+
+        // Modal functions
+        function openModal(imgSrc) {
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modalImg');
+            modal.classList.add('active');
+            modalImg.src = imgSrc;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Tab filtering
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.category;
+                renderGallery(currentCategory);
+            });
+        });
+
+        // Close modal on background click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Three.js Hero Background
+        const canvas = document.getElementById('hero-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        const geometry = new THREE.IcosahedronGeometry(1, 1);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x00d9a5, 
+            wireframe: true 
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        
+        camera.position.z = 3;
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+        
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            mesh.rotation.x += 0.005;
+            mesh.rotation.y += 0.005;
+            mesh.rotation.x += mouseY * 0.01;
+            mesh.rotation.y += mouseX * 0.01;
+            renderer.render(scene, camera);
+        }
+        
+        animateThree();
+
+        // Initial animations
+        window.addEventListener('load', function() {
+            anime({
+                targets: '.logo',
+                opacity: [0, 1],
+                translateX: [-50, 0],
+                duration: 1000,
+                easing: 'easeOutExpo'
+            });
+
+            anime({
+                targets: '.nav-links li',
+                opacity: [0, 1],
+                translateY: [-20, 0],
+                delay: anime.stagger(100, {start: 300}),
+                duration: 800,
+                easing: 'easeOutExpo'
+            });
+
+            anime({
+                targets: '.hero h1',
+                opacity: [0, 1],
+                translateY: [50, 0],
+                duration: 1000,
+                delay: 500,
+                easing: 'easeOutExpo'
+            });
+
+            anime({
+                targets: '.hero p',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800,
+                delay: 800,
+                easing: 'easeOutExpo'
+            });
+
+            anime({
+                targets: '.tab-btn',
+                opacity: [0, 1],
+                translateY: [20, 0],
+                delay: anime.stagger(100, {start: 1000}),
+                duration: 600,
+                easing: 'easeOutExpo'
+            });
+
+            anime({
+                targets: '.section-title',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800,
+                delay: 1200,
+                easing: 'easeOutExpo'
+            });
+
+            renderGallery();
+        });
+
+        // Stats counter animation
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.stat-item').forEach((item, index) => {
+                        anime({
+                            targets: item,
+                            opacity: [0, 1],
+                            translateY: [30, 0],
+                            delay: index * 100,
+                            duration: 800,
+                            easing: 'easeOutExpo'
+                        });
+
+                        const number = item.querySelector('.stat-number');
+                        const target = parseInt(number.dataset.count);
+                        anime({
+                            targets: number,
+                            innerHTML: [0, target],
+                            delay: index * 100 + 200,
+                            duration: 2000,
+                            round: 1,
+                            easing: 'easeOutExpo'
+                        });
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelector('.stats-section') && 
+            statsObserver.observe(document.querySelector('.stats-section'));
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
