@@ -1076,6 +1076,50 @@
             });
         });
     </script>
+    
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+
+<script>
+  (function() {
+    emailjs.init("bjUx23mK9tR7944E2"); // Replace with your EmailJS Public Key
+  })();
+</script>
+
+<script>
+document.getElementById("contactForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    // Show sending message
+    const formMessage = document.getElementById("formMessage");
+    formMessage.textContent = "Sending...";
+    formMessage.style.color = "blue";
+
+    // Prepare email parameters
+    const params = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        subject: document.getElementById("subject").value,
+        message: document.getElementById("message").value
+    };
+
+    emailjs.send("service_c8qyz8q", "template_2fje5ux", params)
+        .then(() => {
+            formMessage.textContent = "Your message has been sent!";
+            formMessage.style.color = "green";
+            document.getElementById("contactForm").reset();
+        })
+        .catch((error) => {
+            formMessage.textContent = "Failed to send message. Please try again.";
+            formMessage.style.color = "red";
+            console.error("EmailJS Error:", error);
+        });
+});
+</script>
+
+
+
+
 </body>
 </html>
-
